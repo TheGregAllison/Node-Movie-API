@@ -138,16 +138,16 @@ app.listen(8080, () => {
   });
 
   //Add a user
-  /* JSON required in this format
+  /*
 {
   Name: String, (required)
   Username: String, (required)
   Password: String, (required)
   Email: String, (required)
   Birthday: Date (01/31/1995 format, required)
-   - FavoriteMovies: Array - (This will be automatically created)
+   - FavoriteMovies: Array - (This empty array will be automatically created)
    - _id: String - (This will also be automatically assigned by MongoDB)
-}*/
+} */
   app.post('/users', async (req, res) => {
     await Users.findOne({ Username: req.body.Username })
       .then((user) => {
@@ -179,7 +179,8 @@ app.listen(8080, () => {
   // Update User by Username
   /* We’ll expect JSON in this format
 {
-  Username: String (required)
+  Name: req.body.Name, (required)
+  Username: String, (required)
   Password: String, (required)
   Email: String, (required)
   Birthday: Date
@@ -212,7 +213,7 @@ app.listen(8080, () => {
     await Users.findOneAndUpdate({ Username: req.params.Username }, {
        $push: { FavoriteMovies: req.params.MovieID }
      },
-     { new: true }) // This line makes sure that the updated document is returned
+     { new: true })
     .then((updatedUser) => {
       res.json(updatedUser);
     })
