@@ -9,16 +9,15 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/styles.css" />
-    <title>MCU Flix Documentation</title>
+    <link rel="stylesheet" href="styles.css" />
+    <title>MyFlix Documentation</title>
   </head>
   <body>
-    <h1>MCU Flix API v1.0.0</h1>
+    <h1>MyFlix API v1.0.0</h1>
     <p>
-      The Marvel Cinematic Universe Flix API is built with the REST architecture in mind. This API has
+      The MyFlix API is built with the REST architecture in mind. This API has
       self-explanatory URLs, returns JSON responses, and uses standard HTTP
-      response codes. <br><br>
-      At this time, we are only providing support for phases 1, 2, and 3. 
+      response codes. <br /><br />
     </p>
     <br />
     <h2>Supported Requests</h2>
@@ -38,35 +37,30 @@
           <td>/movies</td>
           <td>GET</td>
           <td>None</td>
-          <td>An array of JSON objects holding data about all the movies</td>
+          <td>
+            An array of JSON objects holding data about all the movies in the
+            database
+          </td>
         </tr>
         <tr>
           <td>Get list of movies by director</td>
           <td>/movies/directors/[director name]</td>
           <td>GET</td>
           <td>None</td>
-          <td>An array of JSON objects holding data about all the movies by requested director</td>
-        </tr>
-        <tr>
-          <td>Get list of movies by year of release</td>
-          <td>/movies/releaseYear/[year]</td>
-          <td>GET</td>
-          <td>None</td>
-          <td>An array of JSON objects holding data about all the movies by requested year of release</td>
+          <td>
+            An array of JSON objects holding data about all the movies by
+            requested director
+          </td>
         </tr>
         <tr>
           <td>Get list of movies by genre</td>
           <td>/movies/genres/[genre]</td>
           <td>GET</td>
           <td>None</td>
-          <td>An array of JSON objects holding data about all the movies by requested genre</td>
-        </tr>
-        <tr>
-          <td>Get list of movies by MCU Phase</td>
-          <td>/movies/phases/[phase]</td>
-          <td>GET</td>
-          <td>None</td>
-          <td>An array of JSON objects holding data about all the movies in the specified phase</td>
+          <td>
+            An array of JSON objects holding data about all the movies by
+            requested genre
+          </td>
         </tr>
         <tr>
           <td>Get data about a single movie by title</td>
@@ -82,7 +76,7 @@
             'genre': 'action' }
           </td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td>Add a movie</td>
           <td>/movies</td>
           <td>POST</td>
@@ -103,8 +97,8 @@
             'release-year': '2008',<br />
             'genre': 'action' }
           </td>
-        </tr>
-        <tr>
+        </tr> -->
+        <!-- <tr>
           <td>Remove a movie by ID</td>
           <td>/movies/id/[id]</td>
           <td>DELETE</td>
@@ -112,34 +106,40 @@
           <td>
             A text message indicating whether the movie was successfully removed
           </td>
-        </tr>
+        </tr> -->
         <tr>
           <td>Add a user</td>
           <td>/users</td>
           <td>POST</td>
           <td>
             A JSON object holding data about the user to add, structured
-            like:<br />
-            { 'username': '[username]',<br />
-            'name': 'John Doe',<br />
-            'Birth-date': '01/01/1980',<br />
-            'favorited-movies': <br />
-            { 'movie': '[movie title]'} }
+            like:<br /><br />{ 'Name': 'John Doe',<br />
+            'Username': '[username]',<br />
+            'Email': [email@example.com],<br />
+            'Birth-date': '1980-1-31' }
           </td>
           <td>
-            A JSON object holding data about the user that was added, including
-            an ID:<br />
-            { 'id': '######',<br />
-            'username': '[username]',<br />
-            'name': 'John Doe',<br />
-            'Birth-date': '01/01/1980',<br />
-            'favorited-movies': <br />
-            { 'movie': '[movie title]'} }
+            A JSON object holding data about the user that was added, including their assigned id:<br />
+            { '_id': '######',<br />
+            'Name': 'John Doe',<br />
+            'Username': '[username]',<br />
+            'Email': [email@example.com],<br />
+            'Birth-date': '1980-1-31' }
+          </td>
+        </tr>
+        <tr>
+          <td>Add a movie to a user's favorites list by Title</td>
+          <td>/users/[name]/movies/[movieID]</td>
+          <td>PUT</td>
+          <td>None</td>
+          <td>
+            A text message indicating whether the movie was successfully added
+            from the user's favorited movies
           </td>
         </tr>
         <tr>
           <td>Remove a movie from a user's favorites list</td>
-          <td>/users/[name]/[movie]</td>
+          <td>/users/[name]/movies/[movieID]</td>
           <td>DELETE</td>
           <td>None</td>
           <td>

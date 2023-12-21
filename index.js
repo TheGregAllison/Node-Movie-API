@@ -2,195 +2,24 @@ const express = require('express'),
   morgan = require('morgan'),
   fs = require('fs'),
   path = require('path');
+  path = require('path'),
+  mongoose = require('mongoose'),
+  models = require('./models.js'),
+  bodyParser = require('body-parser');
+
+const Movies = models.movie;
+const Users = models.user;
+const Genres = models.genres;
+const Directors = models.directors;
 
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-let movies = [
-    {
-        'id': '1',
-        'title': 'Iron Man',
-        'director': 'Jon Favreau',
-        'releaseYear': '2008',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '2',
-        'title': 'The Incredible Hulk',
-        'director': 'Louis Leterrier',
-        'releaseYear': '2008',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '3',
-        'title': 'Iron Man 2',
-        'director': 'Jon Favreau',
-        'releaseYear': '2010',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '4',
-        'title': 'Thor',
-        'director': 'Kenneth Branagh',
-        'releaseYear': '2011',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '5',
-        'title': 'Captain America: The First Avenger',
-        'director': 'Joe Johnston',
-        'releaseYear': '2011',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '6',
-        'title': 'The Avengers',
-        'director': 'Joss Whedon',
-        'releaseYear': '2012',
-        'genre': 'action',
-        'phase': '1'
-    },
-    {
-        'id': '7',
-        'title': 'Iron Man 3',
-        'director': 'Shane Black',
-        'releaseYear': '2013',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '8',
-        'title': 'Thor: The Dark World',
-        'director': 'Alan Taylor',
-        'releaseYear': '2013',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '9',
-        'title': 'Captain America and The Winter Soldier ',
-        'director': 'Malcolm Spellman',
-        'releaseYear': '2014',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '10',
-        'title': 'Guardians of the Galaxy',
-        'director': 'James Gunn',
-        'releaseYear': '2014',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '11',
-        'title': 'Avengers: Age of Ultron',
-        'director': 'Joss Whedon',
-        'releaseYear': '2015',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '12',
-        'title': 'Ant-Man',
-        'director': 'Peyton Reed',
-        'releaseYear': '2015',
-        'genre': 'action',
-        'phase': '2'
-    },
-    {
-        'id': '13',
-        'title': 'Captain America: Civil War',
-        'director': 'Anthony Russo',
-        'releaseYear': '2016',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '14',
-        'title': 'Doctor Strange',
-        'director': 'Scott Derrickson',
-        'releaseYear': '2016',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '15',
-        'title': 'Guardians of the Galaxy Vol. 2',
-        'director': 'James Gunn',
-        'releaseYear': '2017',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '16',
-        'title': 'Spider-Man: Homecoming',
-        'director': 'Jon Watts',
-        'releaseYear': '2017',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '17',
-        'title': 'Thor: Ragnarok',
-        'director': 'Taika Waititi',
-        'releaseYear': '2017',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '18',
-        'title': 'Black Panther',
-        'director': 'Ryan Coogler',
-        'releaseYear': '2018',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '19',
-        'title': 'Avengers: Infinity War',
-        'director': 'Anthony Russo',
-        'releaseYear': '2018',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '20',
-        'title': 'Ant-Man and the Wasp',
-        'director': 'Peyton Reed',
-        'releaseYear': '2018',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '21',
-        'title': 'Captain Marvel',
-        'director': 'Anna Boden',
-        'releaseYear': '2019',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '22',
-        'title': 'Avengers: Endgame',
-        'director': 'Anthony Russo',
-        'releaseYear': '2019',
-        'genre': 'action',
-        'phase': '3'
-    },
-    {
-        'id': '23',
-        'title': 'Spider-Man: Far From Home',
-        'director': 'Jon Watts',
-        'releaseYear': '2019',
-        'genre': 'action',
-        'phase': '3'
-    },
-    ]
+mongoose.connect('mongodb://127.0.0.1:27017/[myFlix]', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
@@ -199,66 +28,225 @@ const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 app.listen(8080, () => {
   console.log('Server listening on port 8080.');
 
-  app.get('/movies', (req, res) => {
-    res.json(movies);
-    res.status(200).send('Movies array');
+  app.get('/', (req, res) => {
+    res.send('Welcome to myflix!');
   });
 
-  app.get('/movies/:title', (req, res) => {
-    res.json(
-      movies.find((movie) => {
-        return movie.title === req.params.title;
+  // get all movies
+  app.get('/movies', async (req, res) => {
+    await Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
       })
-    );
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
   });
 
-  app.get('/movies/id/:id', (req, res) => {
-    res.json(
-      movies.filter((movie) => {
-        return movie.id === req.params.id;
+  // get movie by title
+  app.get('/movies/:Title', async (req, res) => {
+    await Movies.findOne({ Title: req.params.Title })
+      .then((movie) => {
+        res.json(movie);
       })
-    );
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
   });
 
-  app.get('/movies/genres/:genre', (req, res) => {
-    res.json(
-      movies.filter((movie) => {
-        return movie.genre === req.params.genre;
+  // get movie by MongoDB id
+  app.get('/movies/id/:id', async (req, res) => {
+    await Movies.findOne({ _id: req.params.id })
+      .then((movie) => {
+        res.json(movie);
       })
-    );
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
   });
 
-  app.get('/movies/releaseYear/:releaseYear', (req, res) => {
-    res.json(
-      movies.filter((movie) => {
-        return movie.releaseYear === req.params.releaseYear;
+  // get movie(s) by genre
+  app.get('/movies/genres/:genreName', (req, res) => {
+    Movies.find({ Genre: req.params.genreName })
+      .then((movies) => {
+        res.status(200).json(movies);
       })
-    );
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
   });
 
-  app.get('/movies/phases/:phase', (req, res) => {
-    res.json(
-      movies.filter((movie) => {
-        return movie.phase === req.params.phase;
-      })
-    );
-  });
-
+  // Get movie(s) by director
   app.get('/movies/directors/:director', (req, res) => {
-    res.json(
-      movies.filter((movie) => {
-        return movie.director === req.params.director;
+    Movies.find({ Director: req.params.director })
+      .then((movies) => {
+        res.status(200).json(movies);
       })
-    );
+      .catch((err) => {
+        res.status(500).send('Error: ' + err);
+      });
   });
+
+  // Get all users
+  app.get('/users', async (req, res) => {
+    await Users.find()
+      .then((users) => {
+        res.status(201).json(users);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  app.get('/users/name/:name', async (req, res) => {
+    await Users.findOne({ Name: req.params.name })
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  //Get User by Username
+  app.get('/users/username/:username', async (req, res) => {
+    await Users.findOne({ Username: req.params.username })
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  //Get user by id
+  app.get('/users/id/:id', async (req, res) => {
+    await Users.findOne({ _id: req.params.id })
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  //Add a user
+  /* JSON required in this format
+{
+  Name: String, (required)
+  Username: String, (required)
+  Password: String, (required)
+  Email: String, (required)
+  Birthday: Date (01/31/1995 format, required)
+   - FavoriteMovies: Array - (This will be automatically created)
+   - _id: String - (This will also be automatically assigned by MongoDB)
+}*/
+  app.post('/users', async (req, res) => {
+    await Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send(req.body.Username + 'already exists');
+        } else {
+          Users.create({
+            Name: req.body.Name,
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday,
+          })
+            .then((user) => {
+              res.status(201).json(user);
+            })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  });
+
+  // Update User by Username
+  /* We’ll expect JSON in this format
+{
+  Username: String (required)
+  Password: String, (required)
+  Email: String, (required)
+  Birthday: Date
+}*/
+  app.put('/users/:Username', async (req, res) => {
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Name: req.body.Name,
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        },
+      },
+      { new: true }
+    )
+      .then((updatedUser) => {
+        res.json(updatedUser);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  // Add movie to user's favorites array
+  app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+    await Users.findOneAndUpdate({ Username: req.params.Username }, {
+       $push: { FavoriteMovies: req.params.MovieID }
+     },
+     { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+
+  // Remove movie from user's favorites array
+
+  app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+    await Users.findOneAndUpdate({ Username: req.params.Username }, {
+       $pull: { FavoriteMovies: req.params.MovieID }
+     },
+     { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+
 
 
   app.use(morgan('combined', { stream: log }));
 
   app.use(express.static(path.join(__dirname, 'public')));
 
-  app.get("/documentation", (req, res) => {
-    res.sendFile("public/documentation.html", { root: __dirname });
+  app.get('/documentation', (req, res) => {
+    res.sendFile('public/documentation.html', { root: __dirname });
   });
 
   app.use((err, req, res, next) => {
