@@ -190,3 +190,5 @@
 ::1 - - [21/Dec/2023:15:22:30 +0000] "POST /users/GregTest/movies/6579f09e4d34a5ae9c8e0be4 HTTP/1.1" 404 186 "-" "PostmanRuntime/7.36.0"
 ::1 - - [21/Dec/2023:15:24:14 +0000] "POST /users/GregTest/movies/6579f09e4d34a5ae9c8e0be4 HTTP/1.1" 404 186 "-" "PostmanRuntime/7.36.0"
 ::1 - - [21/Dec/2023:15:59:44 +0000] "GET /movies/genre/Action HTTP/1.1" 404 158 "-" "PostmanRuntime/7.36.0"
+::1 - - [22/Dec/2023:19:14:55 +0000] "POST /movies HTTP/1.1" 404 146 "-" "PostmanRuntime/7.36.0"
+::1 - - [22/Dec/2023:20:13:53 +0000] "POST /users/GregTest HTTP/1.1" 404 154 "-" "PostmanRuntime/7.36.0"
