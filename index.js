@@ -4,7 +4,10 @@ const express = require('express'),
   path = require('path'),
   mongoose = require('mongoose'),
   models = require('./models.js'),
-  bodyParser = require('body-parser');
+  bodyParser = require('body-parser'),
+  cors = require('cors'),
+  bcrypt = require('bcrypt'),
+  { check, validationResults } = require('express-validator');
 
 const Movies = models.movie;
 const Users = models.user;
@@ -12,6 +15,7 @@ const Users = models.user;
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -26,8 +30,9 @@ const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
 });
 
-app.listen(8080, () => {
-  console.log('Server listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 
   app.get('/', (req, res) => {
     res.send('Welcome to myflix!');
@@ -182,37 +187,54 @@ app.listen(8080, () => {
   Username: String, (required)
   Password: String, (required)
   Email: String, (required)
-  Birthday: Date (01/31/1995 format, required)
+  Birthday: Date (DD/MM/YYYY format, required)
    - FavoriteMovies: Array - (This empty array will be automatically created)
    - _id: String - (This will also be automatically assigned by MongoDB)
 } */
-  app.post('/users', async (req, res) => {
-    await Users.findOne({ Username: req.body.Username })
-      .then((user) => {
-        if (user) {
-          return res.status(400).send(req.body.Username + ' already exists');
-        } else {
-          Users.create({
-            Name: req.body.Name,
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday,
-          })
-            .then((user) => {
-              res.status(201).json(user);
+  app.post(
+    '/users',
+    [
+      check('Username', 'Username is required').isLength({ min: 5 }),
+      check(
+        'Username',
+        'Username contains non alphanumeric characters - not allowed.'
+      ).isAlphanumeric(),
+      check('Password', 'Password is required').not().isEmpty(),
+      check('Email', 'Email does not appear to be valid').isEmail(),
+    ],
+    async (req, res) => {
+      let errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+      }
+      let hashedPassword = Users.hashPassword(req.body.Password);
+      await Users.findOne({ Username: req.body.Username })
+        .then((user) => {
+          if (user) {
+            return res.status(400).send(req.body.Username + ' already exists');
+          } else {
+            Users.create({
+              Name: req.body.Name,
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday,
             })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).send('Error: ' + error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
-      });
-  });
+              .then((user) => {
+                res.status(201).json(user);
+              })
+              .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error: ' + error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        });
+    }
+  );
 
   // Update User by Username
   /* We’ll expect JSON in this format
@@ -221,7 +243,7 @@ app.listen(8080, () => {
   Username: String, (required)
   Password: String, (required)
   Email: String, (required)
-  Birthday: Date
+  Birthday: Date (DD/MM/YYYY format)
 }*/
 
   app.put(
