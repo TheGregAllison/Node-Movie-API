@@ -1,4 +1,5 @@
 const express = require('express'),
+  app = express(),
   morgan = require('morgan'),
   fs = require('fs'),
   path = require('path'),
@@ -7,35 +8,51 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   cors = require('cors'),
   bcrypt = require('bcrypt'),
-  { check, validationResults } = require('express-validator');
+  { check, validationResults } = require('express-validator'),
+  auth = require('./auth')(app),
+  passport = require('passport');
+require('./passport');
+
+const Movies = models.movie;
+const Users = models.user;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // mongoose.connect('mongodb://127.0.0.1:27017/[myFlix]', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // });
 
-mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.CONNECTION_URI, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-
-const Movies = models.movie;
-const Users = models.user;
-
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
-
+console.log('MongoDB connection string:', process.env.CONNECTION_URI);
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
 });
 
+app.use(morgan('combined', { stream: log }));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// serves the docuemntation html page
+app.get('/documentation', (req, res) => {
+  res.sendFile('public/documentation.html', { root: __dirname });
+});
+
 const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0', () => {
-  console.log('Listening on Port ' + port);
+app.listen(port, "0.0.0.0", () => {
+	console.log("Listening on Port " + port);
+});
 
   app.get('/', (req, res) => {
     res.send('Welcome to myflix!');
@@ -240,15 +257,14 @@ app.listen(port, '0.0.0.0', () => {
   );
 
   // Update User by Username
-  /* We’ll expect JSON in this format
-{
-  Name: req.body.Name, (required)
-  Username: String, (required)
-  Password: String, (required)
-  Email: String, (required)
-  Birthday: Date (DD/MM/YYYY format)
-}*/
-
+  /* We’ll expect JSON in this format:
+    {
+      Name: req.body.Name, (required)
+      Username: String, (required)
+      Password: String, (required)
+      Email: String, (required)
+      Birthday: Date (DD/MM/YYYY format)
+    }*/
   app.put(
     '/users/:Username',
     passport.authenticate('jwt', { session: false }),
@@ -353,16 +369,7 @@ app.listen(port, '0.0.0.0', () => {
     }
   );
 
-  app.use(morgan('combined', { stream: log }));
-
-  app.use(express.static(path.join(__dirname, 'public')));
-
-  app.get('/documentation', (req, res) => {
-    res.sendFile('public/documentation.html', { root: __dirname });
-  });
-
   app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Server Error');
   });
-});
