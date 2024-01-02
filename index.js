@@ -9,18 +9,6 @@ const express = require('express'),
   bcrypt = require('bcrypt'),
   { check, validationResults } = require('express-validator');
 
-const Movies = models.movie;
-const Users = models.user;
-
-const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
-
 // mongoose.connect('mongodb://127.0.0.1:27017/[myFlix]', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
@@ -28,6 +16,17 @@ require('./passport');
 
 mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
 
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
+const Movies = models.movie;
+const Users = models.user;
+
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 
 
 const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
