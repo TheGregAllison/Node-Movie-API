@@ -25,10 +25,10 @@ app.use(cors());
 //   useUnifiedTopology: true,
 // });
 
-// mongoose.connect(process.env.CONNECTION_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
