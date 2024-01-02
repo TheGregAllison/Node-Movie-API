@@ -12,6 +12,9 @@ const bcrypt = require('bcrypt');
 const app = express();
 const passport = require("passport");
 require("./passport.js");
+let auth = require("./auth.js")(app);
+require("./auth")(router);
+
 
 const Movies = models.movie;
 const Users = models.user;
