@@ -1,8 +1,6 @@
 const jwtSecret = 'your_jwt_secret';
-
 const jwt = require('jsonwebtoken'),
   passport = require('passport');
-
 require('./passport');
 
 let generateJWTToken = (user) => {
@@ -18,8 +16,8 @@ module.exports = (router) => {
     passport.authenticate('local', { session: false }, (error, user, info) => {
       if (error || !user) {
         return res.status(400).json({
-          message: 'Invalid Username or Password',
-          user: user,
+          message: 'Something went wrong!',
+          user: user
         });
       }
       req.login(user, { session: false }, (error) => {
