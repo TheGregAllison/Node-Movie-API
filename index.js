@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
@@ -48,7 +47,6 @@ app.listen(port, '0.0.0.0',() => {
 // });
 
 // Mongo Cloud Database
-
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
