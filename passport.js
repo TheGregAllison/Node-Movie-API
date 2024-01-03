@@ -10,11 +10,11 @@ let Users = Models.user,
 passport.use(
   new LocalStrategy(
     {
-      usernameField: 'username',
-      passwordField: 'password',
+      usernameField: 'Username',
+      passwordField: 'Password',
     },
     async (username, password, callback) => {
-      console.log('${username} ${password}');
+      console.log(`${username} ${password}`);
       await Users.findOne({ username: username })
         .then((user) => {
           if (!user) {
