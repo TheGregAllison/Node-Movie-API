@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
-const bcrypt = require('bcrypt');
 const auth = require('./auth.js')(app);
 const models = require('./models.js');
 const passport = require('passport');
@@ -54,7 +53,7 @@ app.get('/documentation', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Welcome to myflix!');
+  res.send('Welcome to myFlix!');
 });
 
 // get all movies
