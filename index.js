@@ -9,14 +9,13 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
 const methodOverride = require("method-override");
-const auth = require('./auth')(app);
 const models = require('./models');
 const passport = require('passport');
 require('./passport');
+const auth = require('./auth')(app);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', router);
 app.use(methodOverride());
 
 
@@ -376,6 +375,9 @@ app.delete(
       });
   }
 );
+
+require("./auth")(router);
+app.use("/", router);
 
 // In case of server issue
 app.use((err, req, res, next) => {
