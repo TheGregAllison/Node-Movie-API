@@ -13,7 +13,7 @@ const app = express();
 const passport = require('passport');
 require('./passport.js');
 let auth = require('./auth.js')(app);
-require('./auth')(router);
+require("./auth")(router);
 
 const Movies = models.movie;
 const Users = models.user;
@@ -21,6 +21,7 @@ const Users = models.user;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use("/", router);
 
 // mongoose.connect('mongodb://127.0.0.1:27017/[myFlix]', {
 //   useNewUrlParser: true,
