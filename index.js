@@ -8,18 +8,33 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
-const auth = require('./auth.js')(app);
-const models = require('./models.js');
+const methodOverride = require("method-override");
+const auth = require('./auth')(app);
+const models = require('./models');
 const passport = require('passport');
-require('./passport.js');
+require('./passport');
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/', router);
+app.use(methodOverride());
+
 
 const Movies = models.movie;
 const Users = models.user;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use('/', router);
+let allowedOrigins = ['http://localhost:8080'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ 
+      let message = 'The CORS policy for this application does not allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 // Sets the port
 const port = process.env.PORT || 8080;
@@ -34,6 +49,7 @@ app.listen(port, '0.0.0.0',() => {
 // });
 
 // Mongo Cloud Database
+
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
