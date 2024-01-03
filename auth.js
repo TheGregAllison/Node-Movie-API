@@ -1,7 +1,7 @@
 const jwtSecret = 'your_jwt_secret';
 const jwt = require('jsonwebtoken'),
   passport = require('passport');
-require('./passport');
+require('./passport.js');
 
 let generateJWTToken = (user) => {
   return jwt.sign(user, jwtSecret, {

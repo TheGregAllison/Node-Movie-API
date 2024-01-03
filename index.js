@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express();
 const cors = require('cors');
 const router = express.Router();
 const fs = require('fs');
@@ -6,15 +7,12 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const models = require('./models.js');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
-const app = express();
+const auth = require('./auth.js')(app);
+const models = require('./models.js');
 const passport = require('passport');
 require('./passport.js');
-
-let auth = require('./auth')(app);
-
 
 const Movies = models.movie;
 const Users = models.user;
@@ -24,24 +22,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/', router);
 
+// Sets the port
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
+});
+
+// Mongo Local Database
 // mongoose.connect('mongodb://127.0.0.1:27017/[myFlix]', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // });
 
+// Mongo Cloud Database
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-
-// Sets the port
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0', () => {
-  console.log('Listening on Port ' + port);
-});
-
-//writes all server activity to the log.txt file
+// Writes all server activity to the log.txt file
 const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
 })
@@ -363,6 +362,7 @@ app.delete(
   }
 );
 
+// In case of server issue
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Server Error');
