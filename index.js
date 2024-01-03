@@ -10,13 +10,13 @@ const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
 const methodOverride = require("method-override");
 const models = require('./models');
-const passport = require('passport');
-require('./passport');
-const auth = require('./auth')(app);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride());
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
 
 
 const Movies = models.movie;
