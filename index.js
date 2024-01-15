@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
-const methodOverride = require("method-override");
+const methodOverride = require('method-override');
 const models = require('./models');
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,7 +19,6 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-
 const Movies = models.movie;
 const Users = models.user;
 
@@ -28,7 +27,7 @@ let allowedOrigins = ['http://localhost:8080'];
 // app.use(cors({
 //   origin: (origin, callback) => {
 //     if(!origin) return callback(null, true);
-//     if(allowedOrigins.indexOf(origin) === -1){ 
+//     if(allowedOrigins.indexOf(origin) === -1){
 //       let message = 'The CORS policy for this application does not allow access from origin ' + origin;
 //       return callback(new Error(message ), false);
 //     }
@@ -36,14 +35,16 @@ let allowedOrigins = ['http://localhost:8080'];
 //   }
 // }));
 
-app.use(cors({
-  origin: 'http://localhost:1234'
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:1234',
+  })
+);
 
 // Sets the port
 const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
 
 // Mongo Local Database
@@ -62,7 +63,7 @@ mongoose.connect(process.env.CONNECTION_URI, {
 // Writes all server activity to the log.txt file
 const log = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
   flags: 'a',
-})
+});
 app.use(morgan('combined', { stream: log }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -341,19 +342,25 @@ app.post(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    const movieData = req.body.movie;
-
     try {
+      const movie = await Movies.findById(req.params.MovieID);
+
+      if (!movie) {
+        return res.status(404).send('Movie not found');
+      }
+
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        { $push: { FavoriteMovies: movieData } },
+        {
+          $push: { FavoriteMovies: movie },
+        },
         { new: true }
       );
 
       res.json(updatedUser);
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: 'Internal Server Error', details: err.message });
+      res.status(500).send('Error: ' + err);
     }
   }
 );
@@ -381,8 +388,8 @@ app.delete(
   }
 );
 
-require("./auth")(router);
-app.use("/", router);
+require('./auth')(router);
+app.use('/', router);
 
 // In case of server issue
 app.use((err, req, res, next) => {
