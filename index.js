@@ -337,12 +337,13 @@ app.delete(
   }
 );
 
-// Add movie to user's favorites array
 app.post(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
+      console.log('Received data:', req.body); // Add this line to log received data
+
       const movie = await Movies.findById(req.params.MovieID);
 
       if (!movie) {
@@ -356,6 +357,8 @@ app.post(
         },
         { new: true }
       );
+
+      console.log('Updated user:', updatedUser); // Add this line to log updated user
 
       res.json(updatedUser);
     } catch (err) {
