@@ -344,6 +344,13 @@ app.post(
     console.log('Received movie data:', req.body.movie); // Log the received movie data
 
     try {
+      // Log the movie ID from the request
+      console.log('Movie ID from request:', req.body.movie._id);
+
+      // Check if the movie exists
+      const movieExists = await Movies.exists({ _id: req.body.movie._id });
+      console.log('Movie exists:', movieExists);
+
       // Log the user object before the update
       const existingUser = await Users.findOne({ Username: req.params.Username });
       console.log('User before update:', existingUser);
