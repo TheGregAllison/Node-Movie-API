@@ -13,6 +13,7 @@ const models = require('./models');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(methodOverride());
 let auth = require('./auth')(app);
 const passport = require('passport');
