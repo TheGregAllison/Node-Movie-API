@@ -342,23 +342,21 @@ app.post(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
-      console.log('Received data:', req.body); // Add this line to log received data
-
       const movie = await Movies.findById(req.params.MovieID);
 
       if (!movie) {
         return res.status(404).send('Movie not found');
       }
 
+      // Explicitly populate movie details before pushing
+      const populatedMovie = movie.toObject(); // Convert to plain JavaScript object
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
         {
-          $push: { FavoriteMovies: movie },
+          $push: { FavoriteMovies: populatedMovie },
         },
         { new: true }
       );
-
-      console.log('Updated user:', updatedUser); // Add this line to log updated user
 
       res.json(updatedUser);
     } catch (err) {
