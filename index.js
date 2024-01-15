@@ -342,20 +342,28 @@ app.post(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     console.log('Received movie data:', req.body.movie); // Log the received movie data
-    await Users.findOneAndUpdate(
-      { Username: req.params.Username },
-      {
-        $push: { FavoriteMovies: req.body.movie },
-      },
-      { new: true }
-    )
-      .then((updatedUser) => {
-        res.json(updatedUser);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
+
+    try {
+      // Log the user object before the update
+      const existingUser = await Users.findOne({ Username: req.params.Username });
+      console.log('User before update:', existingUser);
+
+      const updatedUser = await Users.findOneAndUpdate(
+        { Username: req.params.Username },
+        {
+          $push: { FavoriteMovies: req.body.movie },
+        },
+        { new: true }
+      );
+
+      // Log the updated FavoriteMovies array
+      console.log('Updated FavoriteMovies array:', updatedUser.FavoriteMovies);
+
+      res.json(updatedUser);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    }
   }
 );
 
