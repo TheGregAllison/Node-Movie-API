@@ -341,35 +341,19 @@ app.post(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    console.log('Received movie data:', req.body.movie); // Log the received movie data
+    const movieData = req.body.movie;
 
     try {
-      // Log the movie ID from the request
-      console.log('Movie ID from request:', req.body.movie._id);
-
-      // Check if the movie exists
-      const movieExists = await Movies.exists({ _id: req.body.movie._id });
-      console.log('Movie exists:', movieExists);
-
-      // Log the user object before the update
-      const existingUser = await Users.findOne({ Username: req.params.Username });
-      console.log('User before update:', existingUser);
-
       const updatedUser = await Users.findOneAndUpdate(
         { Username: req.params.Username },
-        {
-          $push: { FavoriteMovies: req.body.movie },
-        },
+        { $push: { FavoriteMovies: movieData } },
         { new: true }
       );
-
-      // Log the updated FavoriteMovies array
-      console.log('Updated FavoriteMovies array:', updatedUser.FavoriteMovies);
 
       res.json(updatedUser);
     } catch (err) {
       console.error(err);
-      res.status(500).send('Error: ' + err);
+      res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
   }
 );
