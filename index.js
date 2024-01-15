@@ -340,6 +340,7 @@ app.post(
   '/users/:Username/movies/:MovieID',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
+    console.log('Received movie data:', req.body.movie); // Log the received movie data
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
