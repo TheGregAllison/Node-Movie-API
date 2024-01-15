@@ -343,7 +343,7 @@ app.post(
     await Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
-        $push: { FavoriteMovies: req.params.MovieID },
+        $push: { FavoriteMovies: req.body.movie },
       },
       { new: true }
     )
