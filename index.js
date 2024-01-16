@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
 const methodOverride = require('method-override');
 const models = require('./models');
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -22,12 +21,11 @@ require('./passport');
 const Movies = models.movie;
 const Users = models.user;
 
-const cors = require('cors');
 let allowedOrigins = [
   'http://localhost:8080',
   'http://testsite.com',
   'http://localhost:1234',
-  'https://achievement-3-7--illustrious-salamander-21ccf1.netlify.app/',
+  'https://achievement-3-7--illustrious-salamander-21ccf1.netlify.app',
 ];
 
 app.use(
