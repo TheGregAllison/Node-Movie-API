@@ -265,7 +265,7 @@ app.post(
             Username: req.body.Username,
             Password: hashedPassword,
             Email: req.body.Email,
-            Birthday: req.body.Birthday,
+            BirthDate: req.body.BirthDate,
           })
             .then((user) => {
               res.status(201).json(user);
@@ -305,7 +305,7 @@ app.put(
           Username: req.body.Username,
           Password: req.body.Password,
           Email: req.body.Email,
-          Birthday: req.body.Birthday,
+          BirthDate: req.body.BirthDate,
         },
       },
       { new: true }
