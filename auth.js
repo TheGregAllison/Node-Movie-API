@@ -17,13 +17,22 @@ module.exports = (router) => {
       if (error || !user) {
         return res.status(400).json({
           message: 'Something went wrong!',
-          user: user
+          user: user,
         });
       }
       req.login(user, { session: false }, (error) => {
         if (error) {
           res.send(error);
         }
+
+        // Set CORS headers
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
+        res.header(
+          'Access-Control-Allow-Headers',
+          'Origin, X-Requested-With, Content-Type, Accept'
+        );
+        res.header('Access-Control-Allow-Methods', 'POST');
+
         let token = generateJWTToken(user.toJSON());
         return res.json({ user, token });
       });
