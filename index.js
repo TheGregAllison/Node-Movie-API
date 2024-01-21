@@ -25,7 +25,7 @@ let allowedOrigins = [
   'http://localhost:8080',
   'http://testsite.com',
   'http://localhost:1234',
-  'https://achievement-3-7--illustrious-salamander-21ccf1.netlify.app',
+  'https://greg-allison-myflix.netlify.app',
 ];
 
 app.use(
