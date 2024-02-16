@@ -24,6 +24,7 @@ const Users = models.user;
 let allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:1234',
+  'http://localhost:4200',
   'https://greg-allison-myflix.netlify.app',
 ];
 
@@ -35,6 +36,7 @@ app.use(
       const allowedOrigins = [
         'http://localhost:8080',
         'http://localhost:1234',
+        'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
       ];
 
