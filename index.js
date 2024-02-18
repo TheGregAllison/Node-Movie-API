@@ -102,14 +102,13 @@ app.get(
   '/genres',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    await Genres.find()
-      .then((genres) => {
-        res.status(201).json(genres);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
+    try {
+      const genres = await Genres.find();
+      res.status(200).json(genres);
+    } catch (err) {
+      console.error('Error fetching genres:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 );
 
@@ -118,14 +117,13 @@ app.get(
   '/directors',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    await Directors.find()
-      .then((directors) => {
-        res.status(201).json(directors);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
+    try {
+      const directors = await Directors.find();
+      res.status(200).json(directors);
+    } catch (err) {
+      console.error('Error fetching directors:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 );
 
