@@ -20,6 +20,9 @@ require('./passport');
 
 const Movies = models.movie;
 const Users = models.user;
+const Directors = models.director;
+const Genres = models.genre;
+
 
 app.use(
   cors({
