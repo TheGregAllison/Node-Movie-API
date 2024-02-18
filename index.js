@@ -104,6 +104,38 @@ app.get(
   }
 );
 
+//Get all Genres
+app.get(
+  '/genres',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    await Genres.find()
+      .then((genre) => {
+        res.status(201).json(genre);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
+//Get all Directors
+app.get(
+  '/directors',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    await Directors.find()
+      .then((director) => {
+        res.status(201).json(director);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
 // get movie by title
 app.get(
   '/movies/:Title',
