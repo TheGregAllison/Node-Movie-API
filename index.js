@@ -21,13 +21,6 @@ require('./passport');
 const Movies = models.movie;
 const Users = models.user;
 
-let allowedOrigins = [
-  'http://localhost:8080',
-  'http://localhost:1234',
-  'http://localhost:4200',
-  'https://greg-allison-myflix.netlify.app',
-];
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -110,8 +103,8 @@ app.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     await Genres.find()
-      .then((genre) => {
-        res.status(201).json(genre);
+      .then((genres) => {
+        res.status(201).json(genres);
       })
       .catch((err) => {
         console.error(err);
@@ -126,8 +119,8 @@ app.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     await Directors.find()
-      .then((director) => {
-        res.status(201).json(director);
+      .then((directors) => {
+        res.status(201).json(directors);
       })
       .catch((err) => {
         console.error(err);
