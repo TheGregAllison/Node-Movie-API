@@ -23,7 +23,6 @@ const Users = models.user;
 const Directors = models.director;
 const Genres = models.genre;
 
-
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -89,14 +88,13 @@ app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    await Movies.find()
-      .then((movies) => {
-        res.status(201).json(movies);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
+    try {
+      const movies = await Movies.find().populate('Genre').exec();
+      res.status(200).json(movies);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    }
   }
 );
 
