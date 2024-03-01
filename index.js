@@ -33,7 +33,7 @@ app.use(
         'http://localhost:1234',
         'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
-        'https://thegregallison.github.io/myFlix-Angular-App'
+        'https://thegregallison.github.io/myFlix-Angular-App',
       ];
 
       if (allowedOrigins.indexOf(origin) === -1) {
@@ -84,13 +84,22 @@ app.get('/', (req, res) => {
   res.send('Welcome to myFlix!');
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 // get all movies
 app.get(
   '/movies',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
-      const movies = await Movies.find().populate('Genre').populate('Director').exec();
+      const movies = await Movies.find()
+        .populate('Genre')
+        .populate('Director')
+        .exec();
       res.status(200).json(movies);
     } catch (err) {
       console.error(err);
