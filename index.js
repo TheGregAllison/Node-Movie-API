@@ -33,6 +33,7 @@ app.use(
         'http://localhost:1234',
         'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
+        'https://thegregallison.github.io/'
       ];
 
       if (allowedOrigins.indexOf(origin) === -1) {
