@@ -34,6 +34,7 @@ app.use(
         'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
         'https://thegregallison.github.io/myFlix-Angular-App',
+        'https://GitHub.com'
       ];
 
       if (allowedOrigins.indexOf(origin) === -1) {
