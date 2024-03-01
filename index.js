@@ -33,7 +33,7 @@ app.use(
         'http://localhost:1234',
         'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
-        'https://thegregallison.github.io/myFlix-Angular-App',
+        'https://TheGregAllison.github.io/myFlix-Angular-App',
         'https://GitHub.com',
       ];
 
