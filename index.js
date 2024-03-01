@@ -1,6 +1,6 @@
+const cors = require('cors');
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
@@ -33,7 +33,7 @@ app.use(
         'http://localhost:1234',
         'http://localhost:4200',
         'https://greg-allison-myflix.netlify.app',
-        'https://thegregallison.github.io/'
+        'https://thegregallison.github.io'
       ];
 
       if (allowedOrigins.indexOf(origin) === -1) {
