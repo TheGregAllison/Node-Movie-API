@@ -19,6 +19,10 @@
       self-explanatory URLs, returns JSON responses, and uses standard HTTP
       response codes. <br /><br />
     </p>
+    <p>
+      Errors are returned as standard HTTP response codes. Messages detailing
+      the error are included in the response body.
+    </p>
     <br />
     <h2>Supported Requests</h2>
     <table class="table table-striped">
@@ -27,15 +31,55 @@
           <th scope="col">Request</th>
           <th scope="col">URL</th>
           <th scope="col">HTTP Method</th>
-          <th scope="col">Request body data format</th>
-          <th scope="col">Response body data format</th>
+          <th scope="col">Authorization</th>
+          <th scope="col">Request body</th>
+          <th scope="col">Response body</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td>User Login</td>
+          <td>/login</td>
+          <td>POST</td>
+          <td>None</td>
+          <td>
+            A JSON object holding Username and Password, structured as
+            follows:<br /><br />{ 'Username': '{username}', 'Password':
+            '{Password}' },<br />
+          </td>
+          <td>
+            JWT Authentication token <br />
+            { 'token': '######' }
+          </td>
+        </tr>
+        <tr>
+          <td>Register a new user</td>
+          <td>/users</td>
+          <td>POST</td>
+          <td>None</td>
+          <td>
+            A JSON object holding data about the user to add, structured
+            like:<br /><br />{ 'Name': 'John Doe',<br />
+            'Username': '{username}',<br />
+            'Email': {email@example.com},<br />
+            'Birth-date': 'YYYY-MM-DD' }
+          </td>
+          <td>
+            A JSON object holding data about the user that was added, including
+            their assigned id and auth token:<br />
+            { '_id': '######',<br />
+            'Name': 'John Doe',<br />
+            'Username': '{username}',<br />
+            'Email': {email@example.com},<br />
+            'Birth-date': 'YYYY-MM-DD', <br />
+            'token': '######' }
+          </td>
+        </tr>
+        <tr>
           <td>Get list of movies</td>
           <td>/movies</td>
           <td>GET</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             An array of JSON objects holding data about all the movies in the
@@ -44,8 +88,9 @@
         </tr>
         <tr>
           <td>Get list of movies by director</td>
-          <td>/movies/directors/[director name]</td>
+          <td>/movies/directors/{Name}</td>
           <td>GET</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             An array of JSON objects holding data about all the movies by
@@ -54,8 +99,9 @@
         </tr>
         <tr>
           <td>Get list of movies by genre</td>
-          <td>/movies/genres/[genre]</td>
+          <td>/movies/genres/{genreName}</td>
           <td>GET</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             An array of JSON objects holding data about all the movies by
@@ -64,73 +110,55 @@
         </tr>
         <tr>
           <td>Get data about a single movie by title</td>
-          <td>/movies/[title]</td>
+          <td>/movies/{Title}</td>
           <td>GET</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             A JSON object holding data about the requested movie like this:<br />
-            { 'id': '######',<br />
+            { '_id': '######',<br />
             'title': 'Iron Man',<br />
             'director': 'John Favreau',<br />
             'release-year': '2008',<br />
             'genre': 'action' }
           </td>
         </tr>
-        <!-- <tr>
-          <td>Add a movie</td>
-          <td>/movies</td>
-          <td>POST</td>
-          <td>
-            A JSON object holding data about the movie to add, structured
-            like:<br />
-            { 'title': 'Iron Man',<br />
-            'director': 'John Favreau',<br />
-            'release-year': '2008',<br />
-            'genre': 'action' }
-          </td>
-          <td>
-            A JSON object holding data about the student that was added,
-            including an ID:<br />
-            { 'id': '######',<br />
-            'title': 'Iron Man',<br />
-            'director': 'John Favreau',<br />
-            'release-year': '2008',<br />
-            'genre': 'action' }
-          </td>
-        </tr> -->
-        <!-- <tr>
-          <td>Remove a movie by ID</td>
-          <td>/movies/id/[id]</td>
-          <td>DELETE</td>
-          <td>None</td>
-          <td>
-            A text message indicating whether the movie was successfully removed
-          </td>
-        </tr> -->
         <tr>
-          <td>Add a user</td>
-          <td>/users</td>
-          <td>POST</td>
+          <td>Update user details</td>
+          <td>/users/{Username}</td>
+          <td>PUT</td>
+          <td>Required (JWT)</td>
           <td>
-            A JSON object holding data about the user to add, structured
-            like:<br /><br />{ 'Name': 'John Doe',<br />
-            'Username': '[username]',<br />
-            'Email': [email@example.com],<br />
-            'Birth-date': '1980-1-31' }
+            A JSON object holding data about the user to update, structured as
+            follows:<br /><br />{ 'Name': 'John Doe',<br />
+            'Username': '{username}',<br />
+            'Email': {email@example.com},<br />
+            'BirthDate': 'YYYY-MM-DD' }
           </td>
           <td>
-            A JSON object holding data about the user that was added, including their assigned id:<br />
+            A JSON object holding data about the user that was added, including
+            their assigned id and auth token:<br />
             { '_id': '######',<br />
             'Name': 'John Doe',<br />
-            'Username': '[username]',<br />
-            'Email': [email@example.com],<br />
-            'Birth-date': '1980-1-31' }
+            'Username': '{username}',<br />
+            'Email': {email@example.com},<br />
+            'BirthDate': 'YYYY-MM-DD', <br />
+            'token': '######' }
           </td>
+        </tr>
+        <tr>
+          <td>Delete User</td>
+          <td>/users/{Username}</td>
+          <td>DELETE</td>
+          <td>Required (JWT)</td>
+          <td>None</td>
+          <td>A confirmation stating the user has been deleted</td>
         </tr>
         <tr>
           <td>Add a movie object to a user's favorites list</td>
-          <td>/users/[username]/movies/[movieID]</td>
+          <td>/users/{Username}/movies/{movieID}</td>
           <td>PUT</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             A text message indicating whether the movie was successfully added
@@ -139,8 +167,9 @@
         </tr>
         <tr>
           <td>Remove a movie from a user's favorites list</td>
-          <td>/users/[username]/movies/[movieID]</td>
+          <td>/users/{Username}/movies/{movieID}</td>
           <td>DELETE</td>
+          <td>Required (JWT)</td>
           <td>None</td>
           <td>
             A text message indicating whether the movie was successfully removed

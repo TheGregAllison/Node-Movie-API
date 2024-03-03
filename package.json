@@ -27,5 +27,8 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "typedoc": "^0.25.9"
   }
 }
