@@ -23,8 +23,10 @@ const Users = models.user;
 const Directors = models.director;
 const Genres = models.genre;
 
-// Temporary open CORS Policy for Angular Client Testing
-app.use(cors());
+app.use(cors({
+  credentials:true,
+  allowedOrigins:['Content-Type','Authorization']
+}));
 
 // app.use(
 //   cors({
