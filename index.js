@@ -23,13 +23,10 @@ const Users = models.user;
 const Directors = models.director;
 const Genres = models.genre;
 
-app.use(
-  cors({
-    origin: 'https://greg-allison-myflix.netlify.app/',
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
-  })
-);
+app.use(cors({
+  credentials:true,
+  allowedOrigins:['Content-Type','Authorization']
+}));
 
 // app.use(
 //   cors({
